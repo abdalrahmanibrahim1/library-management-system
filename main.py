@@ -1,4 +1,4 @@
-from database import create_tables, add_book, view_books, add_member, view_members
+from database import create_tables, add_book, view_books, add_member, view_members, borrow_book
 
 create_tables()
 print("Database initialized")
@@ -19,3 +19,8 @@ print("Database initialized")
 # add_member("John", "john@gmail.com")
 # print("Member added")
 # print(view_members())
+borrow_book("1","1")
+
+
+
+

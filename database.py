@@ -1,4 +1,5 @@
 import sqlite3
+from datetime import date, timedelta
 
 def create_tables():
     conn = sqlite3.connect("library.db")
@@ -90,3 +91,60 @@ def view_members():
     conn.close()
 
     return result
+
+def add_borrow_record(book_id, member_id, borrow_date, return_date):
+    conn = sqlite3.connect("library.db")
+    cursor = conn.cursor()
+    cursor.execute("PRAGMA foreign_keys = ON")
+
+    insert_query = """
+    INSERT INTO borrow_records (book_id, member_id, borrow_date, return_date) 
+    VALUES ( ?, ?, ?, ?)
+    """
+
+    cursor.execute(insert_query, (book_id, member_id, borrow_date, return_date))
+
+    conn.commit()
+    conn.close()
+
+def update_availability(book_id, available):
+    conn = sqlite3.connect("library.db")
+    cursor = conn.cursor()
+    cursor.execute("PRAGMA foreign_keys = ON")
+
+    update_query = """
+        UPDATE books
+        SET available = ?
+        WHERE id = ?
+    """
+
+    cursor.execute(update_query, (available, book_id))
+
+    conn.commit()
+    conn.close()
+
+def borrow_book(book_id, member_id):
+    
+    books = view_books()
+    members = view_members()
+    books_ids = [row[0] for row in books]
+    members_ids =  [row[0] for row in members]
+    selected_book = None
+
+    for book in books:
+        if book[0] == int(book_id):
+            selected_book = book
+            break
+
+    if int(book_id) not in books_ids:
+        print("Invalid book id")
+        return
+    elif int(member_id) not in members_ids:
+        print("Invalid member id")
+        return
+    elif selected_book[4] == 0:
+        print("The book is currently unavailable")
+        return
+    else:
+        add_borrow_record(book_id, member_id, date.today(), date.today()+timedelta(days=10))
+        update_availability(book_id, 0)
