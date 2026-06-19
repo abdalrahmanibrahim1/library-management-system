@@ -155,7 +155,8 @@ def view_borrowed_books():
     cursor.execute("""
     SELECT b.title, 
            m.name,
-           br.borrow_date
+           br.borrow_date,
+           br.return_date
     FROM borrow_records AS br
     JOIN books AS b
     ON br.book_id = b.id
@@ -168,3 +169,37 @@ def view_borrowed_books():
     conn.close()
 
     return result
+
+
+def return_book(book_id, member_id, return_date):
+    conn = sqlite3.connect("library.db")
+    cursor = conn.cursor()
+
+    query = """
+    UPDATE borrow_records 
+    SET return_date = ?
+    WHERE id = (
+        SELECT id
+        FROM borrow_records
+        WHERE book_id= ?
+          AND member_id = ?
+          AND return_date IS NULL
+          ORDER BY borrow_date DESC
+          LIMIT 1
+    )
+    """
+
+    cursor.execute(query, (return_date, book_id, member_id))
+
+    if cursor.rowcount == 0:
+        print("No active borrow record found.")
+        conn.close()
+        return
+    
+    query2 = """
+    UPDATE books 
+    SET available = 1
+    WHERE id = ?"""
+    cursor.execute(query2, (book_id,))
+    conn.commit()
+    conn.close()
