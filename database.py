@@ -40,3 +40,20 @@ def create_tables():
     
     conn.commit()
     conn.close()
+
+def add_book(title, author, year):
+    conn = sqlite3.connect("library.db")
+    cursor = conn.cursor()
+    cursor.execute("PRAGMA foreign_keys = ON")
+
+    insert_query = """
+    INSERT INTO books (title, author, year) 
+    VALUES ( ?, ?, ?)
+    """
+
+    cursor.execute(insert_query, (title, author, year))
+
+    conn.commit()
+    conn.close()
+
+
