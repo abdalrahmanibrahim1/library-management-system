@@ -63,6 +63,30 @@ def view_books():
     cursor.execute("SELECT * FROM books")
     result = cursor.fetchall()
     conn.close()
-    
+
     return result
     
+def add_member(name, email):
+    conn = sqlite3.connect("library.db")
+    cursor = conn.cursor()
+    cursor.execute("PRAGMA foreign_keys = ON")
+
+    insert_query = """
+    INSERT INTO members (name, email) 
+    VALUES ( ?, ?)
+    """
+
+    cursor.execute(insert_query, (name, email))
+
+    conn.commit()
+    conn.close() 
+
+def view_members():
+    conn = sqlite3.connect("library.db")
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM members")
+    result = cursor.fetchall()
+    conn.close()
+
+    return result
