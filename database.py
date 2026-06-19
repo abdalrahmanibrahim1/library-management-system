@@ -92,17 +92,17 @@ def view_members():
 
     return result
 
-def add_borrow_record(book_id, member_id, borrow_date, return_date):
+def add_borrow_record(book_id, member_id, borrow_date):
     conn = sqlite3.connect("library.db")
     cursor = conn.cursor()
     cursor.execute("PRAGMA foreign_keys = ON")
 
     insert_query = """
-    INSERT INTO borrow_records (book_id, member_id, borrow_date, return_date) 
-    VALUES ( ?, ?, ?, ?)
+    INSERT INTO borrow_records (book_id, member_id, borrow_date) 
+    VALUES ( ?, ?, ?)
     """
 
-    cursor.execute(insert_query, (book_id, member_id, borrow_date, return_date))
+    cursor.execute(insert_query, (book_id, member_id, borrow_date))
 
     conn.commit()
     conn.close()
@@ -123,7 +123,7 @@ def update_availability(book_id, available):
     conn.commit()
     conn.close()
 
-def borrow_book(book_id, member_id):
+def borrow_book(book_id, member_id, borrow_date):
     
     books = view_books()
     members = view_members()
@@ -146,7 +146,7 @@ def borrow_book(book_id, member_id):
         print("The book is currently unavailable")
         return
     else:
-        add_borrow_record(book_id, member_id, date.today(), date.today()+timedelta(days=10))
+        add_borrow_record(book_id, member_id, borrow_date)
         update_availability(book_id, 0)
 
 def view_borrowed_books():
