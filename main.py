@@ -1,5 +1,5 @@
-from database import create_table
+from database import create_tables
 
-create_table()
+create_tables()
 
 print("Database initialized")
