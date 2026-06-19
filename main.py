@@ -1,4 +1,4 @@
-from database import create_tables, add_book, view_books, add_member, view_members, borrow_book
+from database import create_tables, add_book, view_books, add_member, view_members, borrow_book, view_borrowed_books
 
 create_tables()
 print("Database initialized")
@@ -19,7 +19,10 @@ print("Database initialized")
 # add_member("John", "john@gmail.com")
 # print("Member added")
 # print(view_members())
-borrow_book("1","1")
+
+borrowed_books = view_borrowed_books()
+for title, member, borrow_date in borrowed_books:
+    print(f"{title}\nBorrowed by: {member}\n{borrow_date}")
 
 
 

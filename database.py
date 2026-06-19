@@ -148,3 +148,23 @@ def borrow_book(book_id, member_id):
     else:
         add_borrow_record(book_id, member_id, date.today(), date.today()+timedelta(days=10))
         update_availability(book_id, 0)
+
+def view_borrowed_books():
+    conn = sqlite3.connect("library.db")
+    cursor = conn.cursor()
+    cursor.execute("""
+    SELECT b.title, 
+           m.name,
+           br.borrow_date
+    FROM borrow_records AS br
+    JOIN books AS b
+    ON br.book_id = b.id
+    JOIN members AS m
+    ON br.member_id = m.id
+    """)
+
+    result = cursor.fetchall()
+
+    conn.close()
+
+    return result
