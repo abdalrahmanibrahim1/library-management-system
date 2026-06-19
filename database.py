@@ -56,4 +56,13 @@ def add_book(title, author, year):
     conn.commit()
     conn.close()
 
+def view_books():
+    conn = sqlite3.connect("library.db")
+    cursor = conn.cursor()
 
+    cursor.execute("SELECT * FROM books")
+    result = cursor.fetchall()
+    conn.close()
+    
+    return result
+    
